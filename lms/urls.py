@@ -8,4 +8,13 @@ from pwa.views import manifest, service_worker, offline
 
 
 
-urlpatterns = []
+urlpatterns = [
+    path('', views.dashboard, name='dashboard'),
+
+
+
+    #AUTH
+    path('login/', views.Login, name='login'),
+    path('register/', views.Register, name='register'),
+    path('logout/', views.Logout, name='logout'),
+]
