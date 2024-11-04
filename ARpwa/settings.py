@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%los7fzln3@z_ctcuu*8)=s)jcp8$yid^z(+f$-74fvcd=)jb5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -122,11 +123,12 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
@@ -138,19 +140,27 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 
+if DEBUG:
+    AWS_S3_ENDPOINT_LINK = "http://192.168.1.228:9012"
+    AWS_S3_USE_SSL = False 
+else:
+    AWS_S3_ENDPOINT_LINK = "https://minio.ellequin.com"
+
+
 MINIO_ROOT_USER = "hosted"
 MINIO_ROOT_PASSWORD = "hostedwebsite"
-MINIO_BUCKET_NAME = "techknow"
+MINIO_BUCKET_NAME = "scpar"
 
 
 AWS_ACCESS_KEY_ID = MINIO_ROOT_USER
 AWS_SECRET_ACCESS_KEY = MINIO_ROOT_PASSWORD
 AWS_STORAGE_BUCKET_NAME = MINIO_BUCKET_NAME
-AWS_S3_ENDPOINT_URL = "http://192.168.1.228:9012"
+AWS_S3_ENDPOINT_URL = f"{AWS_S3_ENDPOINT_LINK}"
 AWS_DEFAULT_ACL = None
 AWS_QUERYSTRING_AUTH = True
 AWS_S3_FILE_OVERWRITE = False
-AWS_S3_USE_SSL = False 
 
 
-MINIO_ACCESS_URL = "http://192.168.1.228:9012/techknow"
+
+
+MINIO_ACCESS_URL = f"{AWS_S3_ENDPOINT_LINK}/{MINIO_BUCKET_NAME}"

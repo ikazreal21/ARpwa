@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ScpAr</title>
-  <link rel="shortcut icon" type="image/png" href="{% static 'assets/images/logos/favicon.png' %}" />
+  <link rel="shortcut icon" type="image/png" href="{% static 'images/scplogo.png' %}" />
   <link rel="stylesheet" href="{% static 'assets/css/styles.min.css' %}" />
 </head>
 
@@ -34,11 +34,19 @@
               <span class="hide-menu">Home</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="" aria-expanded="false">
+              <a class="sidebar-link" href="{% url 'dashboard' %}"" aria-expanded="false">
                 <span>
                   <i class="ti ti-layout-dashboard"></i>
                 </span>
                 <span class="hide-menu">Dashboard</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{% url 'records_list' %}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-book-2"></i>
+                </span>
+                <span class="hide-menu">Students Records</span>
               </a>
             </li>
           </ul>
