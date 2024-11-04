@@ -25,6 +25,4 @@ urlpatterns = [
     path('login/', views.Login, name='login'),
     path('register/', views.Register, name='register'),
     path('logout/', views.Logout, name='logout'),
-
-    path('raw/<path:file_path>/', views.serve_raw_file, name='serve_raw_file'),
 ] 
