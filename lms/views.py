@@ -151,15 +151,13 @@ def Logout(request):
 # PWA
 
 def AssetLink(request):
-    assetlink = [
-        {
-            "relation": ["delegate_permission/common.handle_all_urls"],
-            "target": {
-            "namespace": "android_app",
-            "package_name": "xyz.appmaker.yiwvwg",
-            "sha256_cert_fingerprints": ["75:44:B1:7B:3C:AA:A1:67:DC:44:B8:F5:6B:F6:D6:2D:10:4C:7F:20:BC:05:E2:FC:44:96:22:07:AD:1F:A6:6B"]
-            }
-        }
-    ]
+    assetlink = [{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.ellequin.scpar.twa",
+        "sha256_cert_fingerprints": ["B7:49:13:A8:55:B8:00:20:D6:FD:51:95:20:98:FA:7F:E5:EF:4E:92:FF:9C:A4:63:7B:D2:ED:B3:91:47:14:24"]
+      }
+    }]
 
     return JsonResponse(assetlink, safe=False)
