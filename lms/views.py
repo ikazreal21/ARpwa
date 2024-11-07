@@ -27,10 +27,11 @@ import requests
 import os
 from django.conf import settings
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 def dashboard(request):
     return render(request, 'lms/index.html')
 
+@login_required(login_url='login')
 def categories(request, category):
     threedModel = ThreeDModel.objects.filter(category=category)
     context = {
@@ -38,24 +39,71 @@ def categories(request, category):
     }
     return render(request, 'lms/categories.html', context)
 
+@login_required(login_url='login')
 def records_list(request):
-    records = Record.objects.all()
+    records = StudentRecord.objects.all()
     return render(request, 'lms/records_list.html', {'records': records})
 
-def student_records(request):
-    records = Record.objects.filter(user=request.user)
-    return render(request, 'lms/student_records.html', {'records': records})
+@login_required(login_url='login')
+def AlphabetRecord(request, pk):
+    student = StudentRecord.objects.get(id=pk)
+    records_list = Record.objects.filter(student_id=student.student_id, category='alphabets')
+    context = {'records_list': records_list, 'pk': pk}
+    return render(request, 'lms/student_alphabet.html', context)
 
-def AddRecord(request):
+@login_required(login_url='login')
+def ColorRecord(request, pk):
+    student = StudentRecord.objects.get(id=pk)
+    records_list = Record.objects.filter(student_id=student.student_id, category='colors')
+    context = {'records_list': records_list, 'pk': pk}
+    return render(request, 'lms/student_color.html', context)
+
+@login_required(login_url='login')
+def ShapeRecord(request, pk):
+    student = StudentRecord.objects.get(id=pk)
+    records_list = Record.objects.filter(student_id=student.student_id, category='shapes')
+    context = {'records_list': records_list, 'pk': pk}
+    return render(request, 'lms/student_shape.html', context)
+
+@login_required(login_url='login')
+def NumberRecord(request, pk):
+    student = StudentRecord.objects.get(id=pk)
+    records_list = Record.objects.filter(student_id=student.student_id, category='numbers')
+    context = {'records_list': records_list, 'pk': pk}
+    return render(request, 'lms/student_numbers.html', context)
+
+@login_required(login_url='login')
+def view_records_list(request, pk):
+    context = {'pk': pk}
+    return render(request, 'lms/student_records.html', context)
+
+@login_required(login_url='login')
+def AddRecord(request, pk, category):
+    student = StudentRecord.objects.get(id=pk)
     form = RecordForm()
     if request.method == 'POST':
+        date = request.POST.get("date")
         form = RecordForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('records_list')
-    return render(request, 'lms/record_form.html', {'form': form})
+            form.save(commit=False).user = request.user
+            record = form.save()
+            record.student_id = student.student_id
+            record.category = category
+            record.assesment_date = date
+            record.save()
+            if category == 'alphabets':
+                return redirect('alphabet_records', pk=pk)
+            elif category == 'colors':
+                return redirect('color_records', pk=pk)
+            elif category == 'numbers':
+                return redirect('shape_records', pk=pk)
+            elif category == 'shapes':
+                return redirect('number_records', pk=pk)
+        print(form.errors)
+    return render(request, 'lms/add_record.html', {'form': form})
 
 # 3D
+@login_required(login_url='login')
 def arcamera(request, pk):
     model = ThreeDModel.objects.get(id=pk)
     # Render the AR viewer page, passing the absolute proxy URL
@@ -70,6 +118,7 @@ def Login(request):
         password = request.POST.get('password')
         # print(username, password)
         user = authenticate(request, username=username, password=password)
+        print(user)
         if user is not None:
             login(request, user)
             next_url = request.POST.get('next', 'dashboard')
@@ -97,3 +146,20 @@ def Register(request):
 def Logout(request):
     logout(request)
     return redirect('login')
+
+
+# PWA
+
+def AssetLink(request):
+    assetlink = [
+        {
+            "relation": ["delegate_permission/common.handle_all_urls"],
+            "target": {
+            "namespace": "android_app",
+            "package_name": "xyz.appmaker.yiwvwg",
+            "sha256_cert_fingerprints": ["75:44:B1:7B:3C:AA:A1:67:DC:44:B8:F5:6B:F6:D6:2D:10:4C:7F:20:BC:05:E2:FC:44:96:22:07:AD:1F:A6:6B"]
+            }
+        }
+    ]
+
+    return JsonResponse(assetlink, safe=False)

@@ -3,17 +3,18 @@
 {% load static %} 
 {% block content %} 
 <div class="row">
-  
+  {% for i in records %}
     <div class="col-sm-6 col-xl-3">
       <div class="card overflow-hidden rounded-2">
         <div class="position-relative">
         </div>
         <div class="card-body pt-4 p-2">
-          <h6 class="fw-semibold fs-4"><a href="">Boat Headphone</a></h6>
-          <p>TESt</p>
+          <h6 class="fw-semibold fs-4"><a href="{% url 'view_records_list' i.id %}">{{i.last_name | title}}, {{i.first_name | title}}</a></h6>
+          <p>{{i.email}}</p>
         </div>
       </div>
     </div>
+    {% endfor %}
 </div>
 
 {% endblock %}

@@ -15,8 +15,15 @@ urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     path('categories/<str:category>', views.categories, name='categories'),
     path('records/', views.records_list, name='records_list'),
-    path('student_records/', views.student_records, name='student_records'),
-    path('add-record/', views.AddRecord, name='add_record'),
+
+    path('view_records/<str:pk>', views.view_records_list, name='view_records_list'),
+    path('add-record/<str:pk>/<str:category>', views.AddRecord, name='add_record'),
+
+    # Student Records
+    path('alphabet_records/<str:pk>', views.AlphabetRecord, name='alphabet_records'),
+    path('color_records/<str:pk>', views.ColorRecord, name='color_records'),
+    path('shape_records/<str:pk>', views.ShapeRecord, name='shape_records'),
+    path('number_records/<str:pk>', views.NumberRecord, name='number_records'),
 
     # 3D 
     path('arcamera/<str:pk>', views.arcamera, name='arcamera'),
@@ -25,4 +32,11 @@ urlpatterns = [
     path('login/', views.Login, name='login'),
     path('register/', views.Register, name='register'),
     path('logout/', views.Logout, name='logout'),
+
+    # pwa
+    url(r'^serviceworker\.js$', service_worker, name='serviceworker'),
+    url(r'^manifest\.json$', manifest, name='manifest'),
+    url('^offline/$', offline, name='offline'),
+
+    path(".well-known/assetlinks.json", views.AssetLink),
 ] 

@@ -3,17 +3,49 @@
 {% load static %} 
 {% block content %} 
 <div class="row">
-  
-    <div class="col-sm-6 col-xl-3">
-      <div class="card overflow-hidden rounded-2">
-        <div class="position-relative">
-          <a href=""><img src="{% static 'assets/images/products/s4.jpg' %}" class="card-img-top rounded-0" alt="..."></a>
+  <div class="card">
+    <div class="card-body">
+      <form method="POST">
+        {% csrf_token  %}
+
+        <!-- <div class="mb-3">
+          <label for="category" class="form-label">Category</label>
+          <select class="form-control" id="category" name="category">
+            <option value="" disabled selected>Select a category</option>
+            <option value="alphabets">Alphabets</option>
+            <option value="colors">Colors</option>
+            <option value="shapes">Shapes</option>
+            <option value="numbers">Numbers</option>
+          </select>
+        </div> -->
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Activity Name</label>
+          <input type="text" class="form-control" id="exampleInputEmail1" name="record_name">
         </div>
-        <div class="card-body pt-3 p-4">
-          <h6 class="fw-semibold fs-4">Boat Headphone</h6>
+
+        <!-- Score field -->
+        <div class="mb-3">
+          <label for="score" class="form-label">Score</label>
+          <input type="number" class="form-control" id="score" name="score" placeholder="Enter score" min="0" max="100" required>
         </div>
-      </div>
+
+        <!-- Items field -->
+        <div class="mb-3">
+          <label for="items" class="form-label">Items</label>
+          <input type="number" class="form-control" id="items" name="items" placeholder="Enter number of items" min="1" required>
+        </div>
+
+        <!-- Date field -->
+        <div class="mb-3">
+          <label for="date" class="form-label">Date</label>
+          <input type="date" class="form-control" id="date" name="date">
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
     </div>
+  </div>
 </div>
 
 {% endblock %}

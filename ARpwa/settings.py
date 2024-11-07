@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%los7fzln3@z_ctcuu*8)=s)jcp8$yid^z(+f$-74fvcd=)jb5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_interface', 
+    'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -83,6 +85,10 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+import dj_database_url
+
+DATABASES['default'] = dj_database_url.parse("postgres://hosted_user:QnajRBTJrwxSRfbV2yvH2pnwk5@192.168.1.228:5432/scpar", conn_max_age=600)
 
 
 # Password validation
@@ -164,3 +170,37 @@ AWS_S3_FILE_OVERWRITE = False
 
 
 MINIO_ACCESS_URL = f"{AWS_S3_ENDPOINT_LINK}/{MINIO_BUCKET_NAME}"
+
+
+PWA_APP_NAME = 'SCPAR-APP'
+PWA_APP_DESCRIPTION = "Sampalucan Christian Preschool Application"
+PWA_APP_THEME_COLOR = '#D3291A'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = 'http://127.0.0.1:8000'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/images/scplogo.png',
+        'sizes': '512x512'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': '/static/images/scplogo.png',
+        'sizes': '512x512'
+    }
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        'src': '/static/images/scplogo.png',
+        'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
+    }
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'en-PH'
+PWA_APP_DISPLAY_OVERRIDE = {
+    
+}

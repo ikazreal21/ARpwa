@@ -68,6 +68,7 @@ class Quiz(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    category = models.CharField(max_length=50, choices=CATEGORY)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -94,16 +95,21 @@ class Question(models.Model):
     
 
 class Record(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    student_id = models.CharField(max_length=50)
-    category = models.CharField(max_length=50, choices=CATEGORY)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
+    student_id = models.CharField(max_length=50, blank=True, null=True)
+    record_name = models.CharField(max_length=100, blank=True, null=True)
+    category = models.CharField(max_length=50, choices=CATEGORY, blank=True, null=True)
     score = models.IntegerField()
     items = models.IntegerField()
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField(auto_now=True)
+    assesment_date = models.DateField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.category
+    
+    def date(self):
+        # locale.setlocale(locale.LC_ALL, 'en-US')
+        return self.assesment_date.strftime("%B %d, %Y")
     
     class Meta:
         verbose_name_plural = "Records"
@@ -111,6 +117,8 @@ class Record(models.Model):
 class StudentRecord(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
+    email = models.CharField(max_length=50)
+    student_id = models.CharField(max_length=50, default=create_rand_id, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

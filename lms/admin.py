@@ -43,8 +43,14 @@ class UserAdminConfig(UserAdmin):
     )
 
 admin.site.unregister(Group)
-# admin.site.unregister(Theme)
+admin.site.unregister(Theme)
 admin.site.register(CustomUser, UserAdminConfig)
 admin.site.register(ThreeDModel)
 admin.site.register(Quiz)
 admin.site.register(Question)
+admin.site.register(Record)
+admin.site.register(StudentRecord)
+
+
+admin.site.site_title = "SCP Admin"
+admin.site.site_header = "SCP Admin"
