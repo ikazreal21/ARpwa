@@ -5,23 +5,78 @@
   <head>
     {% progressive_web_app_meta %}
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <!-- Import AR.js version without NFT but with marker + location-based support -->
     <script src="https://cdn.rawgit.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
   </head>
   <body style="margin: 0; overflow: hidden;">
-    <a-scene embedded arjs>
+    <a-scene embedded arjs vr-mode-ui="enabled: false">
         <a-marker type="pattern" url="{{model.marker.url}}">
-            <!-- Custom 3D Model -->
             <a-entity 
+                  id="model"
                   gltf-model="url({{model.threedfile.url}})"
                   scale="1 1 1" 
                   position="0 0 0" 
-                  rotation="270 90 270"> <!-- Rotated 90 degrees around Y-axis -->
-                </a-entity>
+                  rotation="270 90 270">
+            </a-entity>
         </a-marker>
         <a-entity camera></a-entity>
-      </a-scene>
+    </a-scene>
+
+    <script>
+      const model = document.getElementById('model');
+
+      // For rotating the model along the Y-axis using horizontal swipes
+      let startX = null;
+      let initialRotationY = 0;
+
+      // Helper function to calculate the distance between two touch points (for pinch zoom)
+      function getDistance(touch1, touch2) {
+        const dx = touch1.clientX - touch2.clientX;
+        const dy = touch1.clientY - touch2.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+      }
+
+      // Event listener for touch start (detect horizontal swipe for rotation)
+      window.addEventListener('touchstart', (event) => {
+        if (event.touches.length === 1) {  // Detect one finger swipe for rotation
+          startX = event.touches[0].clientX;
+          const currentRotation = model.getAttribute('rotation');
+          initialRotationY = currentRotation.y;
+        }
+        if (event.touches.length === 2) {  // Detect two-finger touch for resizing
+          initialDistance = getDistance(event.touches[0], event.touches[1]);
+          const currentScale = model.getAttribute('scale');
+          initialScale = parseFloat(currentScale.x);  // Assume uniform scaling
+        }
+      });
+
+      // Event listener for touch move (rotation for horizontal swipe, zoom for pinch)
+      window.addEventListener('touchmove', (event) => {
+        if (event.touches.length === 1 && startX !== null) {
+          const currentX = event.touches[0].clientX;
+          const deltaX = currentX - startX;
+
+          // Update rotation only on Y-axis based on horizontal swipe
+          const newRotationY = initialRotationY + deltaX * 0.5;  // Adjust sensitivity
+          model.setAttribute('rotation', `270 ${newRotationY} 270`);
+        }
+        if (event.touches.length === 2 && initialDistance) {
+          const currentDistance = getDistance(event.touches[0], event.touches[1]);
+          const scaleChange = currentDistance / initialDistance;
+          const newScale = initialScale * scaleChange;
+          model.setAttribute('scale', `${newScale} ${newScale} ${newScale}`);
+        }
+      });
+
+      // Reset on touch end
+      window.addEventListener('touchend', () => {
+        startX = null;
+        initialDistance = null;  // Reset distance for scaling
+      });
+    </script>
   </body>
 </html>
+
+
+
           <!-- gltf-model="url(https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/refs/heads/main/2.0/Avocado/glTF/Avocado.gltf)"  -->
           <!-- gltf-model="letter_a.gltf" -->
