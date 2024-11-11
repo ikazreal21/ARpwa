@@ -15,16 +15,49 @@
                   gltf-model="url({{model.threedfile.url}})"
                   scale="1 1 1" 
                   position="0 0 0" 
-                  rotation="270 90 270">
+                  rotation="0 0 0"
+                  data-description="{{model.description}}">
             </a-entity>
         </a-marker>
         <a-entity camera></a-entity>
     </a-scene>
 
-    <script>
-      const model = document.getElementById('model');
+    <!-- TTS Button -->
+    <button id="ttsButton" style="
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    ">
+      Speak Description
+    </button>
 
-      // For rotating the model along the Y-axis using horizontal swipes
+    <script>
+      // Text to Speech functionality
+      const ttsButton = document.getElementById("ttsButton");
+      const model = document.getElementById("model");
+
+      ttsButton.addEventListener("click", () => {
+        const description = model.getAttribute("data-description") || "No description available.";
+        const synth = window.speechSynthesis;
+        const utterance = new SpeechSynthesisUtterance(description);
+
+        // Set voice attributes (optional)
+        utterance.pitch = 1;   // Pitch of the voice
+        utterance.rate = 1;    // Speed of the voice
+
+        // Speak the description
+        synth.speak(utterance);
+      });
+
+      // Model interaction logic
       let startX = null;
       let initialRotationY = 0;
 
@@ -57,7 +90,7 @@
 
           // Update rotation only on Y-axis based on horizontal swipe
           const newRotationY = initialRotationY + deltaX * 0.5;  // Adjust sensitivity
-          model.setAttribute('rotation', `270 ${newRotationY} 270`);
+          model.setAttribute('rotation', `0 ${newRotationY} 0`);
         }
         if (event.touches.length === 2 && initialDistance) {
           const currentDistance = getDistance(event.touches[0], event.touches[1]);
@@ -75,8 +108,3 @@
     </script>
   </body>
 </html>
-
-
-
-          <!-- gltf-model="url(https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/refs/heads/main/2.0/Avocado/glTF/Avocado.gltf)"  -->
-          <!-- gltf-model="letter_a.gltf" -->

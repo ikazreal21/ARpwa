@@ -7,7 +7,9 @@
     <div class="col-sm-6 col-xl-3">
       <div class="card overflow-hidden rounded-2">
         <div class="position-relative">
+          {% if i.image %}
           <a href="{% url 'arcamera' i.id %}"><img src="{{i.image.url}}" class="card-img-top rounded-0" alt="..."></a>
+          {% endif %}
         </div>
         <div class="card-body pt-3 p-4">
           <h6 class="fw-semibold fs-4">{{i.name | title }}</h6>
