@@ -1,0 +1,25 @@
+{% extends 'lms/base.html' %}
+
+{% block content %}
+<div class="card-body">
+    <h3 class="card-title fw-semibold mb-4">Quiz Results</h3>
+    <div class="card">
+        <div class="card-body text-center">
+            <h4 class="mb-3">{{ quiz.name | title }}</h4>
+            
+            <p class="h5">Your Score:</p>
+            <p class="display-4 fw-bold text-primary">{{ correct_answers }} / {{ total_questions }}</p>
+            
+            <div class="mt-4">
+                <p class="mb-1">Correct Answers: {{ correct_answers }}</p>
+                <p class="mb-1">Total Questions: {{ total_questions }}</p>
+            </div>
+
+            <div class="mt-5">
+                <a href="{% url 'assessment' quiz.category  %}" class="btn btn-secondary me-2">Back to Categories</a>
+                <a href="{% url 'questions' quiz.id %}" class="btn btn-primary">Try Again</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

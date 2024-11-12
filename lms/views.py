@@ -36,6 +36,7 @@ def categories(request, category):
     threedModel = ThreeDModel.objects.filter(category=category)
     context = {
         'threedModel': threedModel,
+        'category': category
     }
     return render(request, 'lms/categories.html', context)
 
@@ -161,3 +162,68 @@ def AssetLink(request):
     }]
 
     return JsonResponse(assetlink, safe=False)
+
+
+
+# Assessment
+@login_required(login_url='login')
+def Quizes(request, category):
+    assesments = Quiz.objects.filter(category=category)
+    context = {
+        'quiz': assesments
+    }
+    return render(request, 'lms/quiz.html', context)
+
+@login_required(login_url='login')
+def Questions(request, quiz_id):
+    quiz = Quiz.objects.get(id=quiz_id)
+    all_questions = list(Question.objects.all())
+    selected_questions = sample(all_questions, int(quiz.number_of_items))
+    
+    request.session['multiplequestions_ids'] = [question.id for question in selected_questions]
+
+    print(selected_questions)
+
+    context = {
+        'quiz': quiz,
+        'multiple_choices': selected_questions
+    }
+
+    return render(request, 'lms/quizquestions.html', context)
+
+
+@login_required(login_url='login')
+def SubmitQuiz(request, quiz_id):
+    quiz = Quiz.objects.get(id=quiz_id)
+    if request.method == 'POST':
+        correct_answers = 0
+        total_questions = quiz.number_of_items
+
+        # Retrieve question IDs from session
+        question_ids = request.session.get('multiplequestions_ids', [])
+        questions = Question.objects.filter(id__in=question_ids)
+
+        # Check each submitted answer
+        for question in questions:
+            user_answer = request.POST.get(f'answer_{question.id}')
+            print(f'Question {question.id}: {question.question} - User Answer: {user_answer} - Correct Answer: {question.answer}')
+            if user_answer == question.answer:
+                correct_answers += 1
+
+        # Calculate score as a percentage
+        score = (correct_answers / total_questions) * 100
+        # earn_points = correct_answers * 0.05
+        # user = request.user
+        # user.save()
+        
+        # Save the result
+        # Record.objects.create(
+        #     user=request.user,
+        #     quiz=quiz,
+        #     score=earn_points,
+        #     course_code=quiz.course.course_code
+        # )
+        
+        return render(request, 'lms/quiz_results.html', {'quiz': quiz, 'score': score, "correct_answers" : correct_answers, "total_questions": total_questions})
+
+    return redirect('assessment', category=quiz.category)

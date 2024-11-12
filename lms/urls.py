@@ -39,4 +39,9 @@ urlpatterns = [
     url('^offline/$', offline, name='offline'),
 
     path(".well-known/assetlinks.json", views.AssetLink),
+
+    # Assesment
+    path("assessment/<str:category>", views.Quizes, name='assessment'),
+    path("questions/<str:quiz_id>", views.Questions, name='questions'),
+    path("sumbit_assesment/<str:quiz_id>", views.SubmitQuiz, name='sumbit_assesment'),
 ] 

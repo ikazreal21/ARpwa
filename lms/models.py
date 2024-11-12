@@ -71,6 +71,7 @@ class Quiz(models.Model):
     category = models.CharField(max_length=50, choices=CATEGORY)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    number_of_items = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
