@@ -177,7 +177,7 @@ def Quizes(request, category):
 @login_required(login_url='login')
 def Questions(request, quiz_id):
     quiz = Quiz.objects.get(id=quiz_id)
-    all_questions = list(Question.objects.all())
+    all_questions = list(Question.objects.filter(quiz=quiz))
     selected_questions = sample(all_questions, int(quiz.number_of_items))
     
     request.session['multiplequestions_ids'] = [question.id for question in selected_questions]

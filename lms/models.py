@@ -82,11 +82,12 @@ class Quiz(models.Model):
 class Question(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     question = models.TextField()
-    option1 = models.CharField(max_length=100)
-    option2 = models.CharField(max_length=100)
-    option3 = models.CharField(max_length=100)
-    option4 = models.CharField(max_length=100)
-    answer = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='uploads/assesment', blank=True, null=True)
+    option1 = models.CharField(max_length=100, blank=True, null=True)
+    option2 = models.CharField(max_length=100, blank=True, null=True)
+    option3 = models.CharField(max_length=100, blank=True, null=True)
+    option4 = models.CharField(max_length=100, blank=True, null=True)
+    answer = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return self.question

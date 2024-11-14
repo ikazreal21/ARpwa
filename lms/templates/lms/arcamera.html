@@ -25,37 +25,85 @@
     <!-- TTS Button -->
     <button id="ttsButton" style="
       position: absolute;
-      bottom: 10px;
+      bottom: 60px;
       left: 50%;
       transform: translateX(-50%);
       padding: 10px 20px;
       font-size: 16px;
-      background-color: #4CAF50;
+      background-color:#D3291A;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     ">
-      Speak Description
+      Speak
     </button>
+
+    <!-- Speed Slider -->
+    <!-- <div style="
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      color: white;
+    ">
+      <label for="speedSlider">Speech Speed:</label>
+      <input type="range" id="speedSlider" min="0.1" max="2" value="1" step="0.1">
+    </div> -->
 
     <script>
       // Text to Speech functionality
-      const ttsButton = document.getElementById("ttsButton");
-      const model = document.getElementById("model");
+    const ttsButton = document.getElementById("ttsButton");
+    const model = document.getElementById("model");
+    let defaultVoice = null;  // Variable to store the default British English voice
 
-      ttsButton.addEventListener("click", () => {
-        const description = model.getAttribute("data-description") || "No description available.";
-        const synth = window.speechSynthesis;
-        const utterance = new SpeechSynthesisUtterance(description);
+    // Load voices and set the default voice on voices changed
+    function setDefaultVoice() {
+      const voices = window.speechSynthesis.getVoices();
+      
+      // Find a British English voice or fallback to another English voice if not available
+      defaultVoice = voices.find(voice => voice.lang === "en-GB") || voices.find(voice => voice.lang.startsWith("en"));
+      
+      if (!defaultVoice) {
+        console.warn("British English voice not found. Using system default.");
+      }
+    }
 
-        // Set voice attributes (optional)
-        utterance.pitch = 1;   // Pitch of the voice
-        utterance.rate = 1;    // Speed of the voice
+    // Ensure the voice list is loaded before setting the default voice
+    window.speechSynthesis.onvoiceschanged = setDefaultVoice;
 
-        // Speak the description
-        synth.speak(utterance);
-      });
+    // Event listener for the TTS button
+    ttsButton.addEventListener("click", () => {
+      const description = model.getAttribute("data-description") || "No description available.";
+      const synth = window.speechSynthesis;
+      const utterance = new SpeechSynthesisUtterance(description);
+
+      // Set speaking rate
+      utterance.rate = 0.5;
+
+      // Use the preferred default voice if available
+      if (defaultVoice) {
+        utterance.voice = defaultVoice;
+      }
+
+      // Speak the description
+      synth.speak(utterance);
+    });
+
+
+      // Function to log available voices
+    // function listAvailableVoices() {
+    //   const voices = window.speechSynthesis.getVoices();
+
+    //   // Loop through each voice and log its properties
+    //   voices.forEach((voice, index) => {
+    //     console.log(`${index + 1}: Name: ${voice.name}, Language: ${voice.lang}, Default: ${voice.default}`);
+    //   });
+    // }
+
+    // // Call this function after voices are loaded
+    // window.speechSynthesis.onvoiceschanged = listAvailableVoices;
 
       // Model interaction logic
       let startX = null;
