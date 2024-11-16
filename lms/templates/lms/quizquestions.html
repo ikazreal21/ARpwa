@@ -15,27 +15,27 @@
                         
                         {% if question.image %}
                         <div style="text-align: center; margin: 20px 0;">
-                            <img src="{{ question.image.url }}" alt="Question Image" style="max-width: 100%; width: 300px; height: auto;">
+                            <img src="{{ question.image.url }}" alt="Question Image" style="max-width: 100%; width: 100px; height: auto;">
                         </div>
                         {% endif %}
 
                         <div class="form-check">
-                            <input type="radio" class="form-check-input" name="answer_{{ forloop.counter }}" id="question{{ forloop.counter }}Option1" value="{{ question.option1 }}">
+                            <input type="radio" class="form-check-input" name="answer_{{ question.id }}" id="question{{ forloop.counter }}Option1" value="{{ question.option1 }}">
                             <label class="form-check-label" for="question{{ forloop.counter }}Option1">A) {{ question.option1 }}</label>
                         </div>
                         <div class="form-check">
-                            <input type="radio" class="form-check-input" name="answer_{{ forloop.counter }}" id="question{{ forloop.counter }}Option2" value="{{ question.option2 }}">
+                            <input type="radio" class="form-check-input" name="answer_{{ question.id  }}" id="question{{ forloop.counter }}Option2" value="{{ question.option2 }}">
                             <label class="form-check-label" for="question{{ forloop.counter }}Option2">B) {{ question.option2 }}</label>
                         </div>
                         {% if question.option3 %}
                         <div class="form-check">
-                            <input type="radio" class="form-check-input" name="answer_{{ forloop.counter }}" id="question{{ forloop.counter }}Option3" value="{{ question.option3 }}">
+                            <input type="radio" class="form-check-input" name="answer_{{ question.id  }}" id="question{{ forloop.counter }}Option3" value="{{ question.option3 }}">
                             <label class="form-check-label" for="question{{ forloop.counter }}Option3">C) {{ question.option3 }}</label>
                         </div>
                         {% endif %}
                         {% if question.option4 %}
                         <div class="form-check">
-                            <input type="radio" class="form-check-input" name="answer_{{ forloop.counter }}" id="question{{ forloop.counter }}Option4" value="{{ question.option4 }}">
+                            <input type="radio" class="form-check-input" name="answer_{{ question.id  }}" id="question{{ forloop.counter }}Option4" value="{{ question.option4 }}">
                             <label class="form-check-label" for="question{{ forloop.counter }}Option4">D) {{ question.option4 }}</label>
                         </div>
                         {% endif %}
