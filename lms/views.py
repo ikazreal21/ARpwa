@@ -204,8 +204,10 @@ def SubmitQuiz(request, quiz_id):
         questions = Question.objects.filter(id__in=question_ids)
 
         # Check each submitted answer
+        questions_and_answers = []
         for question in questions:
             user_answer = request.POST.get(f'answer_{question.id}')
+            questions_and_answers.append((question, user_answer))
             print(f'Question {question.id}: {question.question} - User Answer: {user_answer} - Correct Answer: {question.answer}')
             if user_answer == question.answer:
                 correct_answers += 1
@@ -223,7 +225,13 @@ def SubmitQuiz(request, quiz_id):
         #     score=earn_points,
         #     course_code=quiz.course.course_code
         # )
+        context = {'quiz': quiz, 
+                   'score': score, 
+                   'correct_answers' : correct_answers, 
+                   'total_questions': total_questions,
+                   'questions_and_answers': questions_and_answers,
+                   }
         
-        return render(request, 'lms/quiz_results.html', {'quiz': quiz, 'score': score, "correct_answers" : correct_answers, "total_questions": total_questions})
+        return render(request, 'lms/quiz_results.html', context)
 
     return redirect('assessment', category=quiz.category)

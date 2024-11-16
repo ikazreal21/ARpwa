@@ -6,19 +6,49 @@
     <div class="card">
         <div class="card-body text-center">
             <h4 class="mb-3">{{ quiz.name | title }}</h4>
-            
+
             <p class="h5">Your Score:</p>
             <p class="display-4 fw-bold text-primary">{{ correct_answers }} / {{ total_questions }}</p>
-            
+
             <div class="mt-4">
                 <p class="mb-1">Correct Answers: {{ correct_answers }}</p>
                 <p class="mb-1">Total Questions: {{ total_questions }}</p>
             </div>
 
             <div class="mt-5">
-                <a href="{% url 'assessment' quiz.category  %}" class="btn btn-secondary me-2">Back to Categories</a>
+                <a href="{% url 'assessment' quiz.category %}" class="btn btn-secondary me-2">Back to Categories</a>
                 <a href="{% url 'questions' quiz.id %}" class="btn btn-primary">Try Again</a>
             </div>
+        </div>
+    </div>
+
+    <!-- Questions Review Section -->
+    <div class="card mt-5">
+        <div class="card-body">
+            <h4 class="card-title mb-4">Question Review</h4>
+            {% for question, chosen_answer in questions_and_answers %}
+                <div class="mb-4">
+                    <h3>{{ forloop.counter }}. {{ question.question }}</h3>
+
+                    {% if question.image %}
+                    <div style="text-align: center; margin: 10px 0;">
+                        <img src="{{ question.image.url }}" alt="Question Image" style="max-width: 100%; width: 300px; height: auto;">
+                    </div>
+                    {% endif %}
+
+                    <div>
+                        <h5><strong>Correct Answer:</strong> <span class="text-success">{{ question.answer }}</span></h5>
+                        <h5><strong>Your Answer:</strong> 
+                            {% if chosen_answer == question.answer %}
+                                <span class="text-success">{{ chosen_answer }}</span>
+                            {% else %}
+                                <span class="text-danger">{{ chosen_answer }}</span>
+                            {% endif %}
+                        </h5>
+                    </div>
+                </div>
+                <hr>
+            {% endfor %}
         </div>
     </div>
 </div>

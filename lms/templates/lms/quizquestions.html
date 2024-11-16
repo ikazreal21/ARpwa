@@ -7,46 +7,114 @@
     <h3 class="card-title fw-semibold mb-4">{{ quiz.name | title }}</h3>
     <div class="card">
         <div class="card-body">
-            <form method="POST" action="{% url 'sumbit_assesment' quiz.id %}">
+            <form id="quiz-form" method="POST" action="{% url 'sumbit_assesment' quiz.id %}">
                 {% csrf_token %}
-                {% for question in multiple_choices %}
-                    <div class="mb-3">
-                        <h4 class="form-label">{{ question.question }}</h4>
-                        
-                        {% if question.image %}
-                        <div style="text-align: center; margin: 20px 0;">
-                            <img src="{{ question.image.url }}" alt="Question Image" style="max-width: 100%; width: 100px; height: auto;">
-                        </div>
-                        {% endif %}
+                <div id="quiz-container">
+                    {% for question in multiple_choices %}
+                        <div class="question-container" id="question-{{ forloop.counter }}" {% if not forloop.first %}style="display: none;"{% endif %}>
+                            <h4 class="form-label">{{ question.question }}</h4>
+                            
+                            {% if question.image %}
+                            <div style="text-align: center; margin: 20px 0;">
+                                <img src="{{ question.image.url }}" alt="Question Image" style="max-width: 100%; width: 300px; height: auto;">
+                            </div>
+                            {% endif %}
 
-                        <div class="form-check">
-                            <input type="radio" class="form-check-input" name="answer_{{ question.id }}" id="question{{ forloop.counter }}Option1" value="{{ question.option1 }}">
-                            <label class="form-check-label" for="question{{ forloop.counter }}Option1">A) {{ question.option1 }}</label>
-                        </div>
-                        <div class="form-check">
-                            <input type="radio" class="form-check-input" name="answer_{{ question.id  }}" id="question{{ forloop.counter }}Option2" value="{{ question.option2 }}">
-                            <label class="form-check-label" for="question{{ forloop.counter }}Option2">B) {{ question.option2 }}</label>
-                        </div>
-                        {% if question.option3 %}
-                        <div class="form-check">
-                            <input type="radio" class="form-check-input" name="answer_{{ question.id  }}" id="question{{ forloop.counter }}Option3" value="{{ question.option3 }}">
-                            <label class="form-check-label" for="question{{ forloop.counter }}Option3">C) {{ question.option3 }}</label>
-                        </div>
-                        {% endif %}
-                        {% if question.option4 %}
-                        <div class="form-check">
-                            <input type="radio" class="form-check-input" name="answer_{{ question.id  }}" id="question{{ forloop.counter }}Option4" value="{{ question.option4 }}">
-                            <label class="form-check-label" for="question{{ forloop.counter }}Option4">D) {{ question.option4 }}</label>
-                        </div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input" name="answer_{{ question.id }}" id="question{{ forloop.counter }}Option1" value="{{ question.option1 }}" data-correct="{{ question.answer }}">
+                                <label class="form-check-label" for="question{{ forloop.counter }}Option1">A) {{ question.option1 }}</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input" name="answer_{{ question.id }}" id="question{{ forloop.counter }}Option2" value="{{ question.option2 }}" data-correct="{{ question.answer }}">
+                                <label class="form-check-label" for="question{{ forloop.counter }}Option2">B) {{ question.option2 }}</label>
+                            </div>
+                            {% if question.option3 %}
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input" name="answer_{{ question.id }}" id="question{{ forloop.counter }}Option3" value="{{ question.option3 }}" data-correct="{{ question.answer }}">
+                                <label class="form-check-label" for="question{{ forloop.counter }}Option3">C) {{ question.option3 }}</label>
+                            </div>
+                            {% endif %}
+                            {% if question.option4 %}
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input" name="answer_{{ question.id }}" id="question{{ forloop.counter }}Option4" value="{{ question.option4 }}" data-correct="{{ question.answer }}">
+                                <label class="form-check-label" for="question{{ forloop.counter }}Option4">D) {{ question.option4 }}</label>
+                            </div>
+                            {% endif %}
 
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary mt-4">Submit</button>
+                            <!-- Correct Answer Display -->
+                            <div class="correct-answer mt-3" style="display: none; color: green; font-weight: bold;">
+                                Correct Answer: {{ question.answer }}
+                            </div>
+
+                            <!-- Navigation Buttons -->
+                            <button type="button" class="btn btn-primary mt-3 next-question" data-next="question-{{ forloop.counter|add:1 }}" {% if forloop.last %}style="display: none;"{% endif %}>Next</button>
+                            {% if forloop.last %}
+                            <button type="submit" class="btn btn-success mt-3 finish-quiz" style="display: none;">Finish</button>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const questions = document.querySelectorAll('.question-container');
+
+    questions.forEach((question) => {
+        const options = question.querySelectorAll('input[type="radio"]');
+        const correctAnswerDiv = question.querySelector('.correct-answer');
+        const nextButton = question.querySelector('.next-question');
+        const finishButton = question.querySelector('.finish-quiz');
+
+        // When a choice is selected, reveal the correct answer and enable navigation
+        options.forEach((option) => {
+            option.addEventListener('change', function () {
+                correctAnswerDiv.style.display = 'block';
+
+                if (nextButton) {
+                    nextButton.style.display = 'inline-block';
+                }
+
+                if (finishButton) {
+                    finishButton.style.display = 'inline-block';
+                }
+            });
+        });
+
+        // Navigate to the next question
+        if (nextButton) {
+            nextButton.addEventListener('click', function () {
+                // Check if an answer is selected
+                const selected = question.querySelector('input[type="radio"]:checked');
+                if (!selected) {
+                    alert('Please select an answer before proceeding.');
+                    return;
+                }
+
+                const nextQuestionId = this.getAttribute('data-next');
+                const nextQuestion = document.getElementById(nextQuestionId);
+                if (nextQuestion) {
+                    question.style.display = 'none';
+                    nextQuestion.style.display = 'block';
+                }
+            });
+        }
+    });
+
+    // Form submission validation
+    const form = document.getElementById('quiz-form');
+    form.addEventListener('submit', function (event) {
+        const lastQuestion = questions[questions.length - 1];
+        const selected = lastQuestion.querySelector('input[type="radio"]:checked');
+        if (!selected) {
+            alert('Please answer the last question before submitting.');
+            event.preventDefault();
+        }
+    });
+});
+</script>
 
 {% endblock %}
