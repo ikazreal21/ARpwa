@@ -5,7 +5,9 @@ from django.forms import TextInput, Textarea, CharField
 from django import forms
 from django.db import models
 from django.contrib.auth.models import Group
-from admin_interface.models import Theme
+# from admin_interface.models import Theme
+
+from unfold.admin import ModelAdmin
 
 class UserAdminConfig(UserAdmin):
     model = CustomUser
@@ -43,7 +45,7 @@ class UserAdminConfig(UserAdmin):
     )
 
 admin.site.unregister(Group)
-admin.site.unregister(Theme)
+# admin.site.unregister(Theme)
 admin.site.register(CustomUser, UserAdminConfig)
 admin.site.register(ThreeDModel)
 admin.site.register(Quiz)
